@@ -1,66 +1,99 @@
-This is Simple Perl6 Installer. It is for:
+This is (S)imple (P)erl6 (I)nstaller.
 
-- downloading Parrot and Rakudo sources from repositories
-- installing Parrot VM
-- install Rakudo Perl6 implementation
+It has form of single Makefile file and was written to assist in building and system
+wide installing Parrot and Rakudo projects. In truth, it is just basic adapter for
+Parrot and Rakudo build system.
 
-Parrot version checkouted from repo is always suitable for building Rakudo or
-newest with 'make just-parrot' target.
+Currently it allows to:
+
+- download Parrot and Rakudo sources from repositories
+- build and install
+- test
+- helps in:
+	- automatical building packages, eg. .deb, .rpm, .tgz (with checkinstall)
+	- getting list of installed files (with installwatch) 
+
+Parrot version checkouted from repo is suitable for building Rakudo or
+newest with 'just-parrot' target.
 
 Parrot installs everything system wide by default or into Rakudo source directory (eg. for
-Perl6 (Rakudo) testing) with 'make fast' target.
+Rakudo Perl6 implementation testing) with 'fast' target.
 
-Rakudo is installed into Parrot.
+Rakudo is installed into Parrot install location.
+
+INSTALATION
+
+Place Makefile somewhere and configure SDIR and IDIR varibles at top of the file.
+
+- SDIR is directory where download sources will be located and where everything
+	will be compiled. By default it is /usr/src.
+
+- IDIR is place where everything will be installed, by default it is /usr/local.
 
 USAGE
 
 1)
 
-You need to configure SDIR and IDIR varibles at top of Makefile file.
-
-SDIR is directory where you want to download sources and where everything will be
-compiled. By default it is /usr/src.
-
-IDIR is place where everything will be installed, by default it is /usr/local.
-
-2)
-
 make all
 	Gets and builds Parrot and Rakudo
 
 make parrot
-	Gets and builds Parrot version suitable for building Rakudo.
+	Gets and builds Parrot version suitable for building Rakudo
+
+make just-parrot
+	Gets and builds Parrot, newest version (HEAD)
 
 make rakudo
-	Gets and builds Rakudo, newest version.
+	Gets and builds Rakudo, master branch. Assume Parrot was build in SDIR
+
+make fast
+	Gets and builds Rakudo, master branch. Before building it gets, builds and
+	installs Parrot into Rakudo subdirs then build Rakudo using that Parrot. Not
+	adequate for system wide installation.
 
 make parrot-get
 make rakudo-get
-	Gets target
+	Gets both, Parrot and Rakudo respectively
 
 make parrot-build
 make rakudo-build
-	Builds target
+	Builds Parrot and Rakudo respectively
+
+2)
+
+make install
+make parrot-install
+make rakudo-install
+	Installs both, Parrot and Rakudo respectively into IDIR.
+
+For automatic packages building (eg. installwatch/checkinstall) see below.
 
 3)
 
-make install
-	Installs Parrot and Rakudo into IDIR.
-
-make parrot-install
-make rakudo-install
-	Installs target. For automatic package building (eg. installwatch/checkinstall) look
-	for special targets)
+make wipe
+make parrot-wipe
+make rakudo-wipe
+	Removes both, Parrot and Rakudo respectively from SDIR. 
 
 
-4)
-
-Targets for automating package creations:
+AUTOMATIC PACKAGE CREATION
 
 make checkinstall-parrot  # TODO
-make ceckinstall-rakudo  # TODO
+make checkinstall-rakudo  # TODO
 
-Autor: Sylwester Lunski aka Woodi at #perl6 on freenode.irc.net
+make installwatch-parrot  # TODO
+make installwatch-rakudo  # TODO
 
-Mragowo, October 2009
+TODO: some improvement needed to get clearer package
+
+
+TESTING TARGETS
+
+# TODO
+
+
+DIFF TARGETS
+
+# TODO
+
 

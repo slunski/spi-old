@@ -1,5 +1,4 @@
 # sources and build location
-#SDIR	= .
 #SDIR	= /usr/src
 SDIR	= /home/sylwek/src/perl
 
@@ -7,14 +6,19 @@ SDIR	= /home/sylwek/src/perl
 #IDIR	= /usr/local
 IDIR	= /opt/perl
 
+##########################################
+
+PARROT_BUILD_OPTS	= --prefix=$(IDIR) --optimize
+
+RAKUDO_BUILD_OPTS	= --parrot-config=$(SDIR)/parrot/parrot_config
+
+##########################################
+
 PARROT_REPOSITORY	= https://svn.parrot.org/parrot/trunk parrot
 PARROT_GET_CMD		= svn checkout -r $(PARROT_REV_NEEDED) $(PARROT_REPOSITORY)
-PARROT_UPDATE_CMD	= svn up $(PARROT_REPOSITORY)
-PARROT_BUILD_OPTS	= --optimize
 
 RAKUDO_REPOSITORY	= git://github.com/rakudo/rakudo.git
 RAKUDO_GET_CMD		= git clone $(RAKUDO_REPOSITORY)
-RAKUDO_UPDATE_CMD	= git pull
 
 # End config varibles
 
@@ -22,6 +26,9 @@ RAKUDO_UPDATE_CMD	= git pull
 # Additional vars
 
 PARROT_REV_NEEDED	= `cd $(SDIR) ; cat PARROT_VER`
+PARROT_UPDATE_CMD	= svn up $(PARROT_REPOSITORY)
+
+RAKUDO_UPDATE_CMD	= git pull
 
 ################################################################################
 # Main targets
@@ -75,7 +82,7 @@ parrot-build:
 	echo ; \
 	echo Building Parrot... ; \
 	cd $(SDIR)/parrot ; \
-	perl Configure.pl --prefix=$(IDIR) $(PARROT_BUILD_OPTS) ; \
+	perl Configure.pl $(PARROT_BUILD_OPTS) ; \
 	make
 
 	
@@ -108,7 +115,7 @@ rakudo-build:
 	echo Building Rakudo... ; \
 	echo ; \
 	cd $(SDIR)/rakudo ; \
-	perl Configure.pl --parrot-config=$(SDIR)/parrot/parrot_config ; \
+	perl Configure.pl $(RAKUDO_BUILD_OPTS) ; \
 	make
 
 
@@ -164,25 +171,33 @@ rakudo-test:
 ##################################################
 # Cleaners
 
-
-clean:
-	rm -f PARROT_REVISION ; \
-	rm -f PARROT_VER
+clean: parrot-clean rakudo-clean
 
 parrot-clean:
+	echo ; \
 	cd $(SDIR)/parrot; \
 	make clean
 
 rakudo-clean:
+	echo ; \
 	cd $(SDIR)/rakudo; \
 	make clean
 
-
-distclean: clean
+distclean: parrot-distclean rakudo-distclean
 	echo ; \
 	cd $(SDIR); \
-	cd rakudo ; make distclean ; \
-	cd ../parrot ; make distclean
+	rm -f PARROT_REVISION ; \
+	rm -f PARROT_VER ; \
+
+parrot-distclean:
+	echo ; \
+	cd $(SDIR)/parrot; \
+	make distclean
+
+rakudo-distclean:
+	echo ; \
+	cd $(SDIR)/rakudo; \
+	make distclean
 
 wipe: parrot-wipe rakudo-wipe
 
