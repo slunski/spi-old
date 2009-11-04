@@ -1,25 +1,26 @@
-This is (S)imple (P)erl6 (I)nstaller.
+This is (S)imple (P)erl6 (I)nstaller README.
 
-It has form of single Makefile file and was written to assist in building and system
-wide installing Parrot and Rakudo projects. In truth, it is just basic adapter for
-Parrot and Rakudo build system.
+SPI has form of single Makefile file and was written to assist in building and system
+wide installing Parrot and Rakudo projects. In truth, it is just adapter for Parrot
+and Rakudo build systems but still helps in repeated build/install proces.
 
 Currently it allows to:
 
 - download Parrot and Rakudo sources from repositories
 - build and install
-- test
+- test Rakudo
 - helps in:
 	- automatical building packages, eg. .deb, .rpm, .tgz (with checkinstall)
 	- getting list of installed files (with installwatch) 
 
-Parrot version checkouted from repo is suitable for building Rakudo or
-newest with 'just-parrot' target.
+Parrot version checkouted from repo is suitable for building Rakudo or newest version
+with 'just-parrot' target.
 
-Parrot installs everything system wide by default or into Rakudo source directory (eg. for
-Rakudo Perl6 implementation testing) with 'fast' target.
+Parrot installs everything system wide (into configurable IDIR) by default or into Rakudo
+source directory with 'fast' target (eg. for Rakudo Perl6 implementation testing).
 
 Rakudo is installed into Parrot install location.
+
 
 INSTALATION
 
@@ -30,26 +31,33 @@ Place Makefile somewhere and configure SDIR and IDIR varibles at top of the file
 
 - IDIR is place where everything will be installed, by default it is /usr/local.
 
+Additionally you can tune (PARROT|RAKUDO)_BUILD_OPTS according to your needs.
+
 USAGE
 
-1)
-
 make all
-	Gets and builds Parrot and Rakudo
+	Gets, builds and installs Parrot, then gets, builds and installs Rakudo. Installation
+	goes to IDIR so be sure you set it acording to your needs (/usr/local by default).
+	
+	You can make installation step-by-step with targets below. If you want to build
+	packages you should try installwatch-* or checkinstall-* targets for projects
+	installation.
 
 make parrot
 	Gets and builds Parrot version suitable for building Rakudo
 
-make just-parrot
-	Gets and builds Parrot, newest version (HEAD)
-
 make rakudo
-	Gets and builds Rakudo, master branch. Assume Parrot was build in SDIR
+	Gets and builds Rakudo, master branch. By default it will look for Parrot
+	installation in IDIR
 
 make fast
 	Gets and builds Rakudo, master branch. Before building it gets, builds and
-	installs Parrot into Rakudo subdirs then build Rakudo using that Parrot. Not
-	adequate for system wide installation.
+	installs Parrot into Rakudo subdir then build Rakudo using that Parrot
+	installation. IDIR varible is not used here, both projects instalations live
+	in Rakudo dir in SDIR. Not adequate for system wide installation.
+
+make just-parrot
+	Gets and builds Parrot, newest version (HEAD)
 
 make parrot-get
 make rakudo-get
@@ -59,41 +67,42 @@ make parrot-build
 make rakudo-build
 	Builds Parrot and Rakudo respectively
 
-2)
-
 make install
 make parrot-install
 make rakudo-install
-	Installs both, Parrot and Rakudo respectively into IDIR.
+	Installs both, Parrot and Rakudo respectively into IDIR. Building Rakudo requires
+	ready Parrot installation so target 'install' exists mainly for completness. 
 
-For automatic packages building (eg. installwatch/checkinstall) see below.
 
-3)
+CLEANING TARGETS
+
+make clean
+make parrot-clean
+make rakudo-clean
+	Cleaning after building
+
+make distclean
+make parrot-distclean
+make rakudo-distclean
+	Cleaning after configuring and building
 
 make wipe
 make parrot-wipe
 make rakudo-wipe
-	Removes both, Parrot and Rakudo respectively from SDIR. 
+	Removes sources of both, Parrot and Rakudo respectively from SDIR. 
 
 
 AUTOMATIC PACKAGE CREATION
 
-make checkinstall-parrot  # TODO
-make checkinstall-rakudo  # TODO
+For installing with checkinstall you should su root. Without this step packages will
+not be installed system wide (but they will be created in project dir anyway).
+ 
+make checkinstall-parrot
+make checkinstall-rakudo
 
-make installwatch-parrot  # TODO
-make installwatch-rakudo  # TODO
+Installwatch do spy on syscals during installation proces and writes log file with results. We
+place this log in SDIR. Installwatch is internally used by checkinstall.
 
-TODO: some improvement needed to get clearer package
-
-
-TESTING TARGETS
-
-# TODO
-
-
-DIFF TARGETS
-
-# TODO
-
+make installwatch-parrot
+make installwatch-rakudo
 

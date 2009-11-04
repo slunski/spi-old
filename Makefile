@@ -10,7 +10,7 @@ IDIR	= /opt/perl
 
 PARROT_BUILD_OPTS	= --prefix=$(IDIR) --optimize
 
-RAKUDO_BUILD_OPTS	= --parrot-config=$(SDIR)/parrot/parrot_config
+RAKUDO_BUILD_OPTS	= --parrot-config=$(IDIR)/bin/parrot_config
 
 ##########################################
 
@@ -26,9 +26,6 @@ RAKUDO_GET_CMD		= git clone $(RAKUDO_REPOSITORY)
 # Additional vars
 
 PARROT_REV_NEEDED	= `cd $(SDIR) ; cat PARROT_VER`
-PARROT_UPDATE_CMD	= svn up $(PARROT_REPOSITORY)
-
-RAKUDO_UPDATE_CMD	= git pull
 
 ################################################################################
 # Main targets
@@ -36,7 +33,7 @@ RAKUDO_UPDATE_CMD	= git pull
 # 1a
 # Gets and builds Rakudo and Parrot at once
 
-all: parrot rakudo
+all: parrot parrot-install rakudo rakudo-install
 
 
 # 1b.
@@ -62,10 +59,8 @@ install: parrot-install rakudo-install
 ################################################################################
 #  Helper targets aka real work
 
-# Parrot
-
 ##################################################
-# Gets and builds Parrot (suitable for newest Rakudo)
+# Gets and builds Parrot (suitable for newest Rakudo version)
 
 parrot: config parrot-get parrot-build
 
@@ -93,8 +88,6 @@ parrot-install:
 	cd $(SDIR)/parrot ; \
 	make install-dev
 
-
-# Rakudo
 
 ##################################################
 # Builds Rakudo, Parrot required
@@ -162,10 +155,17 @@ config-parrot-head:
 
 rakudo-test:
 	echo ; \
-	echo Testing Rakudo small suite... ; \
+	echo Testing Rakudo local tests... ; \
 	echo ; \
 	cd $(SDIR)/rakudo ; \
 	make test
+
+rakudo-spectest:
+	echo ; \
+	echo Testing Rakudo with official Perl6 test suite... ; \
+	echo ; \
+	cd $(SDIR)/rakudo ; \
+	make spectest
 
 
 ##################################################
@@ -183,7 +183,9 @@ rakudo-clean:
 	cd $(SDIR)/rakudo; \
 	make clean
 
-distclean: parrot-distclean rakudo-distclean
+distclean: parrot-distclean rakudo-distclean config-distclean
+
+config-distclean:
 	echo ; \
 	cd $(SDIR); \
 	rm -f PARROT_REVISION ; \
@@ -191,15 +193,13 @@ distclean: parrot-distclean rakudo-distclean
 
 parrot-distclean:
 	echo ; \
-	cd $(SDIR)/parrot; \
-	make distclean
+	cd $(SDIR)/parrot && make distclean
 
 rakudo-distclean:
 	echo ; \
-	cd $(SDIR)/rakudo; \
-	make distclean
+	cd $(SDIR)/rakudo && make distclean
 
-wipe: parrot-wipe rakudo-wipe
+wipe: parrot-wipe rakudo-wipe config-distclean
 
 parrot-wipe:
 	cd $(SDIR) ; \
@@ -214,6 +214,29 @@ rakudo-wipe:
 
 ##################################################
 # Misc stuff
+
+packaging-intro:
+	
+
+checkinstall-parrot:
+	cd $(SDIR)/parrot ; \
+	checkinstall make install-dev
+
+checkinstall-rakudo:
+	cd $(SDIR)/rakudo ; \
+	checkinstall make install
+
+installwatch-parrot:
+	cd $(SDIR)/parrot ; \
+	installwatch -o $(SDIR)/parrot-install.log make install
+
+installwatch-rakudo:
+	cd $(SDIR)/rakudo ; \
+	installwatch -o $(SDIR)/rakudo-install.log make install
+
+##################################################
+# Misc stuff
+
 
 
 rakudo-diff:
@@ -232,5 +255,5 @@ parrot-bug:
 	echo ; \
 
 
-.SILENT: config rakudo-get parrot-get
+.SILENT: config rakudo-get parrot
 
