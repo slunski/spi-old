@@ -1,10 +1,8 @@
 # sources and build location
-#SDIR	= /usr/src
-SDIR	= /home/sylwek/src/perl
+SDIR	= ~/src
 
 # where to install 
-#IDIR	= /usr/local
-IDIR	= /opt/perl
+IDIR	= /usr/local
 
 ##########################################
 
@@ -188,8 +186,8 @@ distclean: parrot-distclean rakudo-distclean config-distclean
 config-distclean:
 	echo ; \
 	cd $(SDIR); \
-	rm -f PARROT_REVISION ; \
-	rm -f PARROT_VER ; \
+	rm -f PARROT_REVISION* ; \
+	rm -f PARROT_VER* ; \
 
 parrot-distclean:
 	echo ; \

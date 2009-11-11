@@ -21,6 +21,12 @@ source directory with 'fast' target (eg. for Rakudo Perl6 implementation testing
 
 Rakudo is installed into Parrot install location.
 
+FOR IMPATIENTS
+
+To downloads, buids and installs into /usr/local:
+
+	make parrot && make install-parrot && make rakudo && install-rakudo
+
 
 INSTALATION
 
