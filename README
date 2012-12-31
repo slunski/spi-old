@@ -42,8 +42,9 @@ Additionally you can tune (PARROT|RAKUDO)_BUILD_OPTS according to your needs.
 USAGE
 
 make all
-	Gets, builds and installs Parrot, then gets, builds and installs Rakudo. Installation
-	goes to IDIR so be sure you set it acording to your needs (/usr/local by default).
+	Gets, builds and installs Parrot, then gets, builds and installs Rakudo.
+	Installation goes to IDIR so be sure you set it acording to your needs
+	(/usr/local by default).
 	
 	You can make installation step-by-step with targets below. If you want to build
 	packages you should try installwatch-* or checkinstall-* targets for projects
