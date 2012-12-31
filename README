@@ -25,7 +25,7 @@ FOR IMPATIENTS
 
 To downloads, buids and installs into /usr/local:
 
-	make parrot && make install-parrot && make rakudo && install-rakudo
+	make parrot && make install-parrot && make rakudo && make install-rakudo
 
 
 INSTALATION
